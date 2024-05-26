@@ -4,7 +4,7 @@ import { initialCards } from "./components/cards";
 import { openPopup, closePopup } from "./components/modal";
 
 const cardTemplate = document.querySelector("#card-template").content;
-const CardList = document.querySelector(".places__list");
+const cardList = document.querySelector(".places__list");
 
 const popupProfileEdit = document.querySelector(".popup_type_edit");
 const popupNewCardAdd = document.querySelector(".popup_type_new-card");
@@ -49,7 +49,7 @@ function handleAddCardFormSubmit(evt) {
 
   const newCard = createCard(newCardData, cardTemplate, cardHandlers);
 
-  CardList.prepend(newCard);
+  cardList.prepend(newCard);
 
   formPopupNewCardAdd.reset();
 
@@ -76,7 +76,7 @@ initialCards.forEach(function (card) {
     cardHandlers
   );
 
-  CardList.append(newCard);
+  cardList.append(newCard);
 });
 
 buttonProfileEdit.addEventListener("click", function () {
