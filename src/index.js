@@ -11,7 +11,7 @@ const popupNewCardAdd = document.querySelector(".popup_type_new-card");
 const popupTypeImage = document.querySelector(".popup_type_image");
 
 const popupImage = popupTypeImage.querySelector(".popup__image");
-const PopupImageCaption = popupTypeImage.querySelector(".popup__caption");
+const popupImageCaption = popupTypeImage.querySelector(".popup__caption");
 
 const buttonProfileEdit = document.querySelector(".profile__edit-button");
 const buttonProfileAdd = document.querySelector(".profile__add-button");
@@ -93,7 +93,7 @@ buttonProfileAdd.addEventListener("click", function() {
 function openPopupImage(card) {
   popupImage.src = card.link;
   popupImage.alt = card.name;
-  PopupImageCaption.textContent = card.name;
+  popupImageCaption.textContent = card.name;
 
   openPopup(popupTypeImage);
 }
