@@ -1,47 +1,99 @@
+import "./pages/index.css";
+import { createCard, deleteCard, likeCard } from "./components/card";
+import { initialCards } from "./components/cards";
+import { openPopup, closePopup } from "./components/modal";
 
+const cardTemplate = document.querySelector("#card-template").content;
+const CardList = document.querySelector(".places__list");
 
-import './pages/index.css';
+const popupProfileEdit = document.querySelector(".popup_type_edit");
+const popupNewCardAdd = document.querySelector(".popup_type_new-card");
+const popupTypeImage = document.querySelector(".popup_type_image");
 
-// @todo: Темплейт карточки
+const popupImage = popupTypeImage.querySelector(".popup__image");
+const PopupImageCaption = popupTypeImage.querySelector(".popup__caption");
 
-const cardTemplate = document.querySelector('#card-template').content;
+const buttonProfileEdit = document.querySelector(".profile__edit-button");
+const buttonProfileAdd = document.querySelector(".profile__add-button");
+const buttonsPopupClose = document.querySelectorAll(".popup__close");
 
-// @todo: DOM узлы
+const formPopupEditProfile = document.forms["edit-profile"];
+const formPopupNewCardAdd = document.forms["new-place"];
 
-const content = document.querySelector('.content');
-const cardList = document.querySelector('.places__list');
-
-// @todo: Функция создания карточки
-
-function createCard (element, deleteCard) {
-    const cardElement = cardTemplate.querySelector('.card').cloneNode(true);
-
-    cardElement.querySelector('.card__title').textContent = element.name;
-
-    const cardImage = cardElement.querySelector('.card__image');
-
-    cardImage.src = element.link;
-    cardImage.alt = element.name;
-
-    const deleteButton = cardElement.querySelector('.card__delete-button');
-      deleteButton.addEventListener('click', deleteCard);
-
-    return cardElement;
-};
-
-// @todo: Функция удаления карточки
-
-function removeCard (evt) {
-    const card = evt.target.closest('.card');
-    card.remove();
+const profileTitle = document.querySelector(".profile__title");
+const profileDescription = document.querySelector(".profile__description");
+const cardHandlers = {
+  deleteCard,
+  openPopupImage,
+  likeCard,
 }
 
-// @todo: Вывести карточки на страницу
+function handleEditProfileFormSubmit(evt) {
+  evt.preventDefault();
 
-function renderInitialCards() {
-    initialCards.forEach((element) => {
-      cardList.append(createCard(element, removeCard));
-    });
+  profileTitle.textContent = formPopupEditProfile.name.value;
+  profileDescription.textContent = formPopupEditProfile.description.value;
+
+  closePopup(popupProfileEdit);
+}
+
+formPopupEditProfile.addEventListener("submit", handleEditProfileFormSubmit);
+
+function handleAddCardFormSubmit(evt) {
+  evt.preventDefault();
+
+  const newCardData = {
+    name: formPopupNewCardAdd['place-name'].value,
+    link: formPopupNewCardAdd.link.value,
   }
+
+  const newCard = createCard(newCardData, cardTemplate, cardHandlers);
+
+  CardList.prepend(newCard);
+
+  formPopupNewCardAdd.reset();
+
+  closePopup(popupNewCardAdd);
+}
+
+formPopupNewCardAdd.addEventListener("submit", handleAddCardFormSubmit);
+
+document.querySelectorAll(".popup").forEach(function (element) {
+  element.classList.add("popup_is-animated");
+});
+
+buttonsPopupClose.forEach(function (btn) {
+  const closestPopup = btn.closest(".popup");
+
+  btn.addEventListener("click", function () {
+    closePopup(closestPopup)});
+});
+
+initialCards.forEach(function (card) {
+  const newCard = createCard(
+    card,
+    cardTemplate,
+    cardHandlers
+  );
+
+  CardList.append(newCard);
+});
+
+buttonProfileEdit.addEventListener("click", function () {
+  formPopupEditProfile.name.value = profileTitle.textContent;
+  formPopupEditProfile.description.value = profileDescription.textContent;
   
-  renderInitialCards();
+  openPopup(popupProfileEdit);
+});
+
+buttonProfileAdd.addEventListener("click", function() {
+  openPopup(popupNewCardAdd);
+});
+
+function openPopupImage(card) {
+  popupImage.src = card.link;
+  popupImage.alt = card.name;
+  PopupImageCaption.textContent = card.name;
+
+  openPopup(popupTypeImage);
+}
