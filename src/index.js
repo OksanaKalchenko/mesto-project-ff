@@ -17,8 +17,8 @@ const buttonProfileEdit = document.querySelector(".profile__edit-button");
 const buttonProfileAdd = document.querySelector(".profile__add-button");
 const buttonsPopupClose = document.querySelectorAll(".popup__close");
 
-const formPopupEditProfile = document.forms["edit-profile"];
-const formPopupNewCardAdd = document.forms["new-place"];
+const formPopupEditProfile = document.forms["edit-profile"]; // получаем форму
+const formPopupNewCardAdd = document.forms["new-place"]; // получаем форму
 
 const profileTitle = document.querySelector(".profile__title");
 const profileDescription = document.querySelector(".profile__description");
@@ -29,44 +29,44 @@ const cardHandlers = {
 }
 
 function handleEditProfileFormSubmit(evt) {
-  evt.preventDefault();
+  evt.preventDefault();  // отменим стандартное поведение
 
-  profileTitle.textContent = formPopupEditProfile.name.value;
-  profileDescription.textContent = formPopupEditProfile.description.value;
+  profileTitle.textContent = formPopupEditProfile.name.value; //значение формы, которое потом отправляется на сервер
+  profileDescription.textContent = formPopupEditProfile.description.value; //значение формы, которое потом отправляется на сервер
 
-  closePopup(popupProfileEdit);
+  closePopup(popupProfileEdit); //закрытие попапа редактирования профиля
 }
 
-formPopupEditProfile.addEventListener("submit", handleEditProfileFormSubmit);
+formPopupEditProfile.addEventListener("submit", handleEditProfileFormSubmit); //отправка формы на сервер
 
 function handleAddCardFormSubmit(evt) {
-  evt.preventDefault();
+  evt.preventDefault();  // отменим стандартное поведение
 
   const newCardData = {
-    name: formPopupNewCardAdd['place-name'].value,
-    link: formPopupNewCardAdd.link.value,
-  }
+    name: formPopupNewCardAdd['place-name'].value, //название места, которое потом отправляется на сервер
+    link: formPopupNewCardAdd.link.value, //ссылка на картинку, которая потом отправляется на сервер
+  } //значения новой карточки
 
-  const newCard = createCard(newCardData, cardTemplate, cardHandlers);
+  const newCard = createCard(newCardData, cardTemplate, cardHandlers); //берем значения уже имеющихся карточек
 
-  cardList.prepend(newCard);
+  cardList.prepend(newCard); //добавление новой карточки в начало списка
 
-  formPopupNewCardAdd.reset();
+  formPopupNewCardAdd.reset();  //сброс введенного текста в форму каждый раз при добавлении новой карточки 
 
-  closePopup(popupNewCardAdd);
+  closePopup(popupNewCardAdd); //закрытие попапа добавления карточки
 }
 
-formPopupNewCardAdd.addEventListener("submit", handleAddCardFormSubmit);
+formPopupNewCardAdd.addEventListener("submit", handleAddCardFormSubmit); //отправка формы на сервер
 
 document.querySelectorAll(".popup").forEach(function (element) {
-  element.classList.add("popup_is-animated");
+  element.classList.add("popup_is-animated"); //форич перебирает массив карточек и добавляет функцию анимации на каждом элементе массива
 });
 
 buttonsPopupClose.forEach(function (btn) {
   const closestPopup = btn.closest(".popup");
 
   btn.addEventListener("click", function () {
-    closePopup(closestPopup)});
+    closePopup(closestPopup)}); //закрытие попапов по кнопке крестика
 });
 
 initialCards.forEach(function (card) {
@@ -76,18 +76,18 @@ initialCards.forEach(function (card) {
     cardHandlers
   );
 
-  cardList.append(newCard);
+  cardList.append(newCard); //позволяет добавлять несколько карточек (аппенд)
 });
 
 buttonProfileEdit.addEventListener("click", function () {
   formPopupEditProfile.name.value = profileTitle.textContent;
   formPopupEditProfile.description.value = profileDescription.textContent;
   
-  openPopup(popupProfileEdit);
+  openPopup(popupProfileEdit); //открытие попапа по кнопке редактирование профиля
 });
 
 buttonProfileAdd.addEventListener("click", function() {
-  openPopup(popupNewCardAdd);
+  openPopup(popupNewCardAdd); //открытие попапа добавления новой карточки
 });
 
 function openPopupImage(card) {
@@ -95,5 +95,5 @@ function openPopupImage(card) {
   popupImage.alt = card.name;
   popupImageCaption.textContent = card.name;
 
-  openPopup(popupTypeImage);
+  openPopup(popupTypeImage); //открытие попапа картинки
 }
