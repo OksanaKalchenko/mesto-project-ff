@@ -202,8 +202,6 @@ Promise.all([getAccountInfo(), getInitialCards()])
     console.log("Ошибка", err);
   });
 
-///////
-
 let cardForRemove = null;
 let cardForRemoveId = null;
   
