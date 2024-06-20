@@ -39,7 +39,7 @@
     })
   };
 
-  export function toggleButtonState(inputList, buttonElement, config) {
+  function toggleButtonState(inputList, buttonElement, config) {
     if (hasInvalidInput(inputList)) {
       buttonElement.disabled = true;
       buttonElement.classList.add(config.inactiveButtonClass);

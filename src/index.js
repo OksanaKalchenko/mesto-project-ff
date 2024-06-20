@@ -1,14 +1,15 @@
 import "./pages/index.css";
-import { createCard, deleteCard, likeCard, confirmDeleteCard } from "./components/card";
+import { createCard, likeCard } from "./components/card";
 import { openPopup, closePopup } from "./components/modal";
 import { clearValidation, enableValidation } from "./components/validation";
-import { getAccountInfo, getInitialCards, createNewCard, patchAvatar, patchProfileInfo } from "./components/api"
+import { getAccountInfo, getInitialCards, createNewCard, patchAvatar, patchProfileInfo,deleteCardFromServer } from "./components/api"
 
 const cardTemplate = document.querySelector("#card-template").content;
 const cardList = document.querySelector(".places__list");
 
 const popupProfileEdit = document.querySelector(".popup_type_edit");
 const popupNewCardAdd = document.querySelector(".popup_type_new-card");
+const popupDeleteCard = document.querySelector(".popup_type_delete-card");
 const popupTypeImage = document.querySelector(".popup_type_image");
 const popupTypeEditAvatar = document.querySelector(".popup_type_edit-avatar");
 
@@ -60,12 +61,12 @@ function handleEditProfileFormSubmit(evt) {
   .then((data) => {
     profileTitle.textContent = data.name;
     profileDescription.textContent = data.about;
+    closePopup(popupProfileEdit); //закрытие попапа редактирования профиля
   })
   .catch((err) => 
     console.log("Ошибка", err))
   .finally(() => {
     renderSaving(false);
-    closePopup(popupProfileEdit); //закрытие попапа редактирования профиля
   });
 };
 
@@ -84,13 +85,13 @@ function handleAddCardFormSubmit(evt) {
     const newCard = createCard(cardData, cardTemplate, cardHandlers, cardData.owner._id);
     cardList.prepend(newCard); //добавление новой карточки в начало списка
     formPopupNewCardAdd.reset();  //сброс введенного текста в форму каждый раз при добавлении новой карточки
+    closePopup(popupNewCardAdd); //закрытие попапа добавления карточки
   })
   .catch((err) => {
     console.log("Ошибка", err);
   })
   .finally(() => {
     renderSaving(false);
-    closePopup(popupNewCardAdd); //закрытие попапа добавления карточки
   });
 };
 
@@ -107,13 +108,13 @@ function handleEditAvatarFormSubmit(evt) {
     .then((res) => {
       profileImage.style.backgroundImage = `url(${res.avatar})`;
       formPopupEditAvatar.reset();
+      closePopup(popupTypeEditAvatar);  //закрытие попапа изменения профиля
     })
     .catch((err) => {
       console.log("Ошибка", err);
     })
     .finally(() => {
       renderSaving(false);
-      closePopup(popupTypeEditAvatar);  //закрытие попапа изменения профиля
     });
 };
 
@@ -129,20 +130,25 @@ buttonsPopupClose.forEach(function (btn) {
 
 
 profileImage.addEventListener("click", () => {
+  clearValidation(formPopupEditAvatar, validationConfig);
+  formPopupEditAvatar.reset();
   openPopup(popupTypeEditAvatar);  //открытие попапа изменения аватара
 });
 
 
 buttonProfileEdit.addEventListener("click", () => {
+  clearValidation(formPopupEditProfile, validationConfig);  //валидация форм
   formPopupEditProfile.name.value = profileTitle.textContent;
   formPopupEditProfile.description.value = profileDescription.textContent;
-  clearValidation(popupProfileEdit, validationConfig);  //валидация форм
+  formPopupEditProfile.reset();
   openPopup(popupProfileEdit);
 });
 
 
 buttonProfileAdd.addEventListener("click", function() {
-  openPopup(popupNewCardAdd);  //открытие попапа добавления новой карточки
+  openPopup(popupNewCardAdd); //открытие попапа добавления новой карточки
+  clearValidation(formPopupNewCardAdd, validationConfig);
+  formPopupNewCardAdd.reset(); 
 });
 
 //попап увеличения картинки
@@ -175,7 +181,6 @@ function renderSaving(isSaving) {
   }
 };
 
-
 //отображение массива карточек и профиля
 Promise.all([getAccountInfo(), getInitialCards()])
   .then(([userData, cardsData]) => {
@@ -197,4 +202,27 @@ Promise.all([getAccountInfo(), getInitialCards()])
     console.log("Ошибка", err);
   });
 
+///////
 
+let cardForRemove = null;
+let cardForRemoveId = null;
+  
+
+function deleteCard(card, cardId) {
+  cardForRemove = card;
+  cardForRemoveId = cardId;
+  openPopup(popupDeleteCard);
+}
+
+function confirmDeleteCard() {
+  if (cardForRemove && cardForRemoveId) {
+    deleteCardFromServer(cardForRemoveId)
+      .then(() => {
+        cardForRemove.remove();
+        closePopup(popupDeleteCard);
+        })
+      .catch((err) => {
+        console.log('Ошибка', err);
+        });
+    }
+  }

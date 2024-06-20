@@ -1,8 +1,5 @@
 
-import { deleteCardFromServer, deleteLike, addLike } from "./api"
-import { openPopup, closePopup } from "./modal"
-
-const popupDeleteCard = document.querySelector(".popup_type_delete-card");
+import { deleteLike, addLike } from "./api"
 
 export function createCard(
     cardData,
@@ -48,36 +45,15 @@ export function createCard(
     return cardElement;
   }
 
-  let cardForRemove = null;
-  let cardForRemoveId = null;
-  
-  export function deleteCard(card, cardId) {
-    cardForRemove = card;
-    cardForRemoveId = cardId;
-    openPopup(popupDeleteCard);
-  }
-
-  export function confirmDeleteCard() {
-    if (cardForRemove && cardForRemoveId) {
-      deleteCardFromServer(cardForRemoveId)
-        .then(() => {
-          cardForRemove.remove();
-          closePopup(popupDeleteCard);
-        })
-        .catch((err) => {
-          console.log('Ошибка', err);
-        });
-    }
-  }
-  
-  export function likeCard(evt, cardId, likesCounter) {
-    const isLiked = evt.target.classList.contains("card__like-button_is-active");
+  export function likeCard(likeButton, cardId, likesCounter) {
+    const isLiked = likeButton.target.classList.contains("card__like-button_is-active");
     const likeMethod = isLiked ? deleteLike : addLike;
     likeMethod(cardId)
    
       .then((res) => {
+        
+        likeButton.target.classList.toggle("card__like-button_is-active");
         likesCounter.textContent = res.likes.length;
-        evt.target.classList.toggle("card__like-button_is-active");
       })
       .catch((err) => {
         console.log('Ошибка', err)

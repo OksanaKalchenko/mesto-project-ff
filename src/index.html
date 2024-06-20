@@ -36,7 +36,7 @@
     <div class="popup__content">
       <button type="button" aria-label="Закрыть всплывающее окно" class="popup__close"></button>
       <h3 class="popup__title">Редактировать профиль</h3>
-      <form class="popup__form" name="edit-profile">
+      <form class="popup__form" name="edit-profile" novalidate>
         <input 
         type="text" 
         name="name"
@@ -69,7 +69,7 @@
     <div class="popup__content">
       <button type="button" aria-label="Закрыть всплывающее окно" class="popup__close"></button>
       <h3 class="popup__title">Новое место</h3>
-      <form class="popup__form" name="new-place">
+      <form class="popup__form" name="new-place" novalidate>
         <input 
         type="text" 
         name="place-name"
@@ -106,7 +106,7 @@
   <div class="popup__content">
     <button type="button" class="popup__close"></button>
     <h3 class="popup__title">Обновить аватар</h3>
-    <form class="popup__form" name="edit-avatar">
+    <form class="popup__form" name="edit-avatar" novalidate>
       <input
         type="url"
         name="edit-avatar"
@@ -124,7 +124,7 @@
   <div class="popup__content">
     <button type="button" class="popup__close"></button>
     <h3 class="popup__title">Вы уверены?</h3>
-    <form class="popup__form" name="delete-card">
+    <form class="popup__form" name="delete-card" novalidate>
       <button type="submit" class="button popup__button popup__button_disabled">Да</button>
     </form>
   </div>
