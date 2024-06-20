@@ -50,6 +50,15 @@ const validationConfig = {
   errorClass: "popup__error_visible"
 };
 
+//текст кнопки при выполнении запроса на сервер
+function renderSaving(isSaving) {
+  const popupIsOpened = document.querySelector(".popup_is-opened");
+  if (popupIsOpened) {
+    const submitButton = popupIsOpened.querySelector(".popup__button");
+    submitButton.textContent = isSaving ? "Сохранение..." : "Сохранить";
+  }
+};
+
 //обработчик отправки формы редактирования профиля
 function handleEditProfileFormSubmit(evt) {
   evt.preventDefault();  // отмена стандартного поведения
@@ -61,6 +70,7 @@ function handleEditProfileFormSubmit(evt) {
   .then((data) => {
     profileTitle.textContent = data.name;
     profileDescription.textContent = data.about;
+    renderSaving(false);
     closePopup(popupProfileEdit); //закрытие попапа редактирования профиля
   })
   .catch((err) => 
@@ -85,6 +95,7 @@ function handleAddCardFormSubmit(evt) {
     const newCard = createCard(cardData, cardTemplate, cardHandlers, cardData.owner._id);
     cardList.prepend(newCard); //добавление новой карточки в начало списка
     formPopupNewCardAdd.reset();  //сброс введенного текста в форму каждый раз при добавлении новой карточки
+    renderSaving(false);
     closePopup(popupNewCardAdd); //закрытие попапа добавления карточки
   })
   .catch((err) => {
@@ -108,6 +119,7 @@ function handleEditAvatarFormSubmit(evt) {
     .then((res) => {
       profileImage.style.backgroundImage = `url(${res.avatar})`;
       formPopupEditAvatar.reset();
+      renderSaving(false);
       closePopup(popupTypeEditAvatar);  //закрытие попапа изменения профиля
     })
     .catch((err) => {
@@ -140,7 +152,6 @@ buttonProfileEdit.addEventListener("click", () => {
   clearValidation(formPopupEditProfile, validationConfig);  //валидация форм
   formPopupEditProfile.name.value = profileTitle.textContent;
   formPopupEditProfile.description.value = profileDescription.textContent;
-  formPopupEditProfile.reset();
   openPopup(popupProfileEdit);
 });
 
@@ -166,20 +177,6 @@ document.querySelectorAll(".popup").forEach(function (element) {
 
 
 enableValidation(validationConfig);
-
-//текст кнопки при выполнении запроса на сервер
-function renderSaving(isSaving) {
-  const popupIsOpened = document.querySelector(".popup_is-opened");
-  if (popupIsOpened) {
-    const submitButton = popupIsOpened.querySelector(".popup__button");
-
-    if (isSaving) {
-      submitButton.textContent = "Сохранение...";
-    } else {
-      submitButton.textContent = "Сохранить";
-    }
-  }
-};
 
 //отображение массива карточек и профиля
 Promise.all([getAccountInfo(), getInitialCards()])
